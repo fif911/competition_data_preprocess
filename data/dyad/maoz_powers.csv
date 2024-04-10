@@ -1,0 +1,15 @@
+ccode,country.name,is_major,is_reg_power,power_since
+2,United States,1,0,1899-01-01
+140,Brazil,0,1,1970-01-01
+160,Argentina,0,1,1970-01-01
+200,United Kingdom,1,0,1816-01-01
+220,France,0,1,1944-08-25
+255,Germany,0,1,1991-12-11
+365,Russia,0,1,1991-01-01
+630,Iran,0,1,1970-01-01
+640,Turkey,0,1,1970-01-01
+645,Iraq,0,1,1970-01-01
+666,Israel,0,1,1967-06-11
+710,China,0,1,1950-01-01
+740,Japan,0,1,1991-12-01
+750,India,0,1,1974-01-01

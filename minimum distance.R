@@ -11,26 +11,46 @@ library(magrittr)
 
 gw_cow_years %>% write_csv("data/translation_table_cow_gw_name.csv")
 # create_dyadyears and save to a variable
-dyadyears <- create_dyadyears(system = "cow") %>% add_minimum_distance()
+dyadyears <- create_dyadyears(system = "cow", subset_years = c(1990:2022)) %>% add_minimum_distance()
 
 # Add a column for country name beside the GW country code
 dyadyears <- dyadyears %>%
   mutate(
-
     # country_name1 = countrycode(gwcode1, 'gwn', 'country.name'),
     # country_name2 = countrycode(gwcode2, 'gwn', 'country.name')
     country_name1 = countrycode(ccode1, 'cown', 'country.name'),
     country_name2 = countrycode(ccode2, 'cown', 'country.name')
   )
-# add gw codes usign peacesciencer
-# dyadyears <- dyadyears %>%
-#   add_gwcode()
+
+# drop rows where distance is NA
+dyadyears <- dyadyears %>%
+  filter(!is.na(mindist))
+
+dyadyears %>% write_csv("data/min dist COW.csv")
+stop()
+
+# check if the min distance between countries changes over time
+temp_dyadyears <- dyadyears %>%
+  group_by(ccode1, ccode2) %>%
+  mutate(
+    prev_mindist = lag(mindist),
+    distance_change = mindist != prev_mindist
+  ) %>%
+  ungroup()
+
+# Filter dyads where distance changes and select unique dyads
+dyads_distance_changed <- temp_dyadyears %>%
+  filter(distance_change) %>%
+  distinct(ccode1, ccode2, .keep_all = TRUE)
+
+# Optionally, print or write these dyads to a CSV
+print(dyads_distance_changed)
+
 # save to CSV
+# dyadyears %>% write_csv("data/min dist COW.csv")
+# stop after this line
 
 
-
-# save to CSV
-# dyadyears %>% write_csv("data/min dist GW.csv")
 missing_country_names <- dyadyears %>%
   filter(is.na(country_name1) | is.na(country_name2))
 
