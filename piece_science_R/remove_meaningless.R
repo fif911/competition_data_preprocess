@@ -73,7 +73,7 @@ cm_features <- cm_features %>%
 
 
 # save to csv
-  cm_features %>% write_csv("data/cm_features_v0.4.csv")
+cm_features %>% write_csv("data/cm_features_v0.4.csv")
 
 # columns_to_exclude <- c("month_id", "country_id", "date", 'year', 'ccode', 'country', 'gw_statename') # Adjust as necessary
 manually_excluded_columns <- c("month_id", "country_id", "date", 'year', 'ccode', 'country', 'gw_statename', 'gleditsch_ward')
@@ -150,3 +150,4 @@ cm_features_with_missing_percentage <- cm_features %>%
 
 
 # I need to merge to make correct series for duplicate countries
+print("Done!")
