@@ -1,3 +1,5 @@
+# from 0.4 to 1.0 cm features version
+# adds region and region23 to cm_features, one-hot encodes them, and fixes Germ Fed Rep ccode
 library(magrittr)
 library(tidyverse) # load this first for most/all things
 library(peacesciencer) # the package of interest
@@ -8,7 +10,11 @@ library(ggplot2)
 library(fastDummies) # added for one-hot encoding
 
 # read cm_features.csv
-cm_features <- read_csv("data/cm_features_v0.6.csv")
+cm_features <- read_csv("data/cm_features_v0.4.csv")
+
+# For Germ Fed Rep that has ccode 260, set the ccode to 255
+cm_features <- cm_features %>%
+  mutate(ccode = ifelse(ccode == 260, 255, ccode))
 
 # based on countrycode package, add region to cm_features data
 cm_features <- cm_features %>%
@@ -33,20 +39,13 @@ rows_with_na_region23 <- cm_features %>%
 # assert there are no rows with NA region
 stopifnot(nrow(rows_with_na_region) == 0)
 stopifnot(nrow(rows_with_na_region23) == 0)
-
-# TODO: do one hot encoding for region and region23 with meaningful name of the columns (region_1, region_2, ...)
-# and for region23 (region23_1, region23_2, ...)
-# cm_features <- cm_features %>%
-#   mutate(across(c(region, region23), ~factor(.))) %>%
-#   pivot_longer(cols = c(region, region23), names_to = "region_type", values_to = "region_value") %>%
-#   mutate(name = paste0(region_type, "_", region_value)) %>%
-#   pivot_wider(names_from = name, values_from = region_value, values_fill = list(region_value = 0)) %>%
-#   mutate(across(starts_with("region"), ~as.integer(!is.na(.))))
+# assert there are no rows with NA ged_sb
+stopifnot(sum(is.na(cm_features$ged_sb)) == 0)
 
 # One hot encoding for region and region23, drop the first dummy to avoid multicollinearity
 cm_features <- dummy_cols(cm_features, select_columns = c("region", "region23"), remove_selected_columns = FALSE, remove_first_dummy = TRUE)
 
 
 print("Success")
-cm_features %>% write_csv("data/cm_features_v0.7.csv")
-print("Saved to data/cm_features_v0.7.csv")
+cm_features %>% write_csv("data/cm_features_v1.0.csv")
+print("Saved to data/cm_features_v1.0.csv")
